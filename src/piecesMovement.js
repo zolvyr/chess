@@ -1,42 +1,6 @@
+import { pieces } from "./initialPiecesPositions.js";
+
 export function setupInitialPieces() {
-    const pieces = [
-        // Black pieces
-        { row: 0, col: 0, path: "src/assets/chess-pieces/black-rook.svg" },
-        { row: 0, col: 1, path: "src/assets/chess-pieces/black-knight.svg" },
-        { row: 0, col: 2, path: "src/assets/chess-pieces/black-bishop.svg" },
-        { row: 0, col: 3, path: "src/assets/chess-pieces/black-queen.svg" },
-        { row: 0, col: 4, path: "src/assets/chess-pieces/black-king.svg" },
-        { row: 0, col: 5, path: "src/assets/chess-pieces/black-bishop.svg" },
-        { row: 0, col: 6, path: "src/assets/chess-pieces/black-knight.svg" },
-        { row: 0, col: 7, path: "src/assets/chess-pieces/black-rook.svg" },
-        { row: 1, col: 0, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 1, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 2, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 3, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 4, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 5, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 6, path: "src/assets/chess-pieces/black-pawn.svg" },
-        { row: 1, col: 7, path: "src/assets/chess-pieces/black-pawn.svg" },
-
-        // White pieces
-        { row: 6, col: 0, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 1, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 2, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 3, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 4, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 5, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 6, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 6, col: 7, path: "src/assets/chess-pieces/white-pawn.svg" },
-        { row: 7, col: 0, path: "src/assets/chess-pieces/white-rook.svg" },
-        { row: 7, col: 1, path: "src/assets/chess-pieces/white-knight.svg" },
-        { row: 7, col: 2, path: "src/assets/chess-pieces/white-bishop.svg" },
-        { row: 7, col: 3, path: "src/assets/chess-pieces/white-queen.svg" },
-        { row: 7, col: 4, path: "src/assets/chess-pieces/white-king.svg" },
-        { row: 7, col: 5, path: "src/assets/chess-pieces/white-bishop.svg" },
-        { row: 7, col: 6, path: "src/assets/chess-pieces/white-knight.svg" },
-        { row: 7, col: 7, path: "src/assets/chess-pieces/white-rook.svg" },
-    ];
-
     for (const dataAboutSquare of pieces) {
         const { row, col, path } = dataAboutSquare;
 
@@ -112,6 +76,20 @@ function startDragging(event) {
     document.addEventListener("mouseup", handleMouseUp);
 }
 
+function validateMove(left, top) {
+    const board = document.querySelector(".board");
+    const boardRect = board.getBoundingClientRect();
+
+    const right = boardRect.left + boardRect.width;
+    const bottom = boardRect.top + boardRect.height;
+
+    if (boardRect.left <= left <= right && boardRect.top <= top <= bottom) {
+        return true;
+    }
+
+    return false;
+}
+
 function preparePieceForDragging() {
     const pieceRect = selectedPiece.getBoundingClientRect();
 
@@ -136,7 +114,9 @@ function handleMouseMove(event) {
     const newLeft = event.clientX - pieceRect.width / 2;
     const newTop = event.clientY - pieceRect.height / 2;
 
-    setPiecePosition(newLeft, newTop);
+    if (validateMove(newLeft, newTop)) {
+        setPiecePosition(newLeft, newTop);
+    }
 }
 
 function handleMouseUp() {
