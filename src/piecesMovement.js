@@ -16,6 +16,7 @@ export function setupInitialPieces() {
 
 let selectedSquare = null;
 let selectedPiece = null;
+let hoveredSquare = null;
 
 export function setupDragging() {
     const squares = document.querySelectorAll(".square");
@@ -41,11 +42,11 @@ export function setupDragging() {
     });
 }
 
-function hightlightSquare() {
+function highlightSquare() {
     selectedSquare.style.backgroundColor = "darkgreen";
 }
 
-function disableHightlightSquare() {
+function disableHighlightSquare() {
     const row = selectedSquare.dataset.row;
     const col = selectedSquare.dataset.col;
 
@@ -69,25 +70,11 @@ function disableHover() {
 function startDragging(event) {
     event.preventDefault();
 
-    hightlightSquare();
+    highlightSquare();
     preparePieceForDragging();
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-}
-
-function validateMove(left, top) {
-    const board = document.querySelector(".board");
-    const boardRect = board.getBoundingClientRect();
-
-    const right = boardRect.left + boardRect.width;
-    const bottom = boardRect.top + boardRect.height;
-
-    if (boardRect.left <= left <= right && boardRect.top <= top <= bottom) {
-        return true;
-    }
-
-    return false;
 }
 
 function preparePieceForDragging() {
@@ -95,6 +82,7 @@ function preparePieceForDragging() {
 
     selectedPiece.style.position = "fixed";
     selectedPiece.style.zIndex = "1000";
+    selectedPiece.style.pointerEvents = "none";
     selectedPiece.style.width = `${pieceRect.width}px`;
     selectedPiece.style.height = `${pieceRect.height}px`;
     selectedPiece.style.left = `${pieceRect.left}px`;
@@ -109,19 +97,50 @@ function setPiecePosition(left, top) {
 function handleMouseMove(event) {
     enableHover();
 
+    const board = document.querySelector(".board");
+    const boardRect = board.getBoundingClientRect();
+
     const pieceRect = selectedPiece.getBoundingClientRect();
 
-    const newLeft = event.clientX - pieceRect.width / 2;
-    const newTop = event.clientY - pieceRect.height / 2;
+    // Ensures that the piece will move inside of the board
+    const x = Math.max(
+        boardRect.left,
+        Math.min(event.clientX, boardRect.right - 1)
+    );
+    const y = Math.max(
+        boardRect.top,
+        Math.min(event.clientY, boardRect.bottom - 1)
+    );
 
-    if (validateMove(newLeft, newTop)) {
-        setPiecePosition(newLeft, newTop);
+    const newLeft = x - pieceRect.width / 2;
+    const newTop = y - pieceRect.height / 2;
+
+    highlightSquareWhileDragging(x, y);
+
+    setPiecePosition(newLeft, newTop);
+}
+
+function highlightSquareWhileDragging(x, y) {
+    const elemUnderCursor = document.elementFromPoint(x, y);
+    const square = elemUnderCursor?.closest(".square");
+
+    if (square && square !== hoveredSquare) {
+        hoveredSquare?.classList.remove("drag-hover");
+
+        hoveredSquare = square;
+        hoveredSquare.classList.add("drag-hover")
     }
+}
+
+function disableHighlightSquareWhileDragging() {
+    hoveredSquare.classList.remove("drag-hover");
+    hoveredSquare = null;
 }
 
 function handleMouseUp() {
     disableHover();
-    disableHightlightSquare();
+    disableHighlightSquare();
+    disableHighlightSquareWhileDragging();
 
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);

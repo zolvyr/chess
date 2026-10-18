@@ -103,3 +103,8 @@ body {
     outline: 4px solid deepskyblue;
     outline-offset: -4px;
 }
+
+.square.drag-hover {
+    outline: 4px solid deepskyblue;
+    outline-offset: -4px;
+}
