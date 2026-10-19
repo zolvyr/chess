@@ -1,4 +1,4 @@
-import { pieces } from "./initialPiecesPositions.js";
+import { pieces } from "./gameState.js";
 
 export function setupInitialPieces() {
     for (const dataAboutSquare of pieces) {

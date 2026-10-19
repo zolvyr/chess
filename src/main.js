@@ -1,4 +1,4 @@
-import { createBoard } from "./board.js";
+import { createBoard } from "./createBoard.js";
 import { setupInitialPieces, setupDragging } from "./piecesMovement.js";
 
 function main() {
