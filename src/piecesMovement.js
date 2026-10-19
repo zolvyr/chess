@@ -137,10 +137,37 @@ function disableHighlightSquareWhileDragging() {
     hoveredSquare = null;
 }
 
+function resetPiecePosition() {
+    selectedPiece.style.position = "";
+    selectedPiece.style.zIndex = "";
+    selectedPiece.style.pointerEvents = "";
+    selectedPiece.style.width = "";
+    selectedPiece.style.height = "";
+    selectedPiece.style.left = "";
+    selectedPiece.style.top = "";
+}
+
+
+function movePieceToNewSquare() {
+    const pieceRect = selectedPiece.getBoundingClientRect();
+
+    const x = pieceRect.left + pieceRect.width / 2;
+    const y = pieceRect.top + pieceRect.height / 2;
+
+    const element = document.elementFromPoint(x, y);
+    const targetSquare = element?.closest(".square");
+
+    if (targetSquare) {
+        targetSquare.appendChild(selectedPiece);
+    }
+}
+
 function handleMouseUp() {
     disableHover();
     disableHighlightSquare();
     disableHighlightSquareWhileDragging();
+    movePieceToNewSquare();
+    resetPiecePosition();
 
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
