@@ -1,21 +1,30 @@
-import { pieces } from "./gameState.js";
+import { pieces } from "./initialPiecesState.js";
+import { getMoves } from "./getPossibleMoves.js";
 
 export function setupInitialPieces() {
     for (const dataAboutSquare of pieces) {
-        const { row, col, path } = dataAboutSquare;
+        const { row, col, piece, color, path } = dataAboutSquare;
 
         const currentSquare = document.querySelector(
             `.square[data-row="${row}"][data-col="${col}"]`,
         );
 
-        const piece = document.createElement("img");
-        piece.src = path;
-        currentSquare.appendChild(piece);
+        const currentPiece = document.createElement("img");
+
+        if (piece === "pawn") {
+            currentPiece.dataset.isMoved = "false";
+        }
+
+        currentPiece.dataset.piece = piece;
+        currentPiece.dataset.color = color;
+        currentPiece.src = path;
+
+        currentSquare.appendChild(currentPiece);
     }
 }
 
-let selectedSquare = null;
-let selectedPiece = null;
+export let selectedSquare = null;
+export let selectedPiece = null;
 let hoveredSquare = null;
 
 export function setupDragging() {
@@ -158,6 +167,8 @@ function movePieceToNewSquare() {
     const targetSquare = element?.closest(".square");
 
     if (targetSquare) {
+        const moves = getMoves(selectedSquare, selectedPiece);
+
         targetSquare.appendChild(selectedPiece);
     }
 }
