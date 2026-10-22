@@ -1,5 +1,5 @@
 import { pieces } from "./initialPiecesState.js";
-import { getMoves } from "./getPossibleMoves.js";
+import { getMoves } from "./getMoves.js";
 
 export function setupInitialPieces() {
     for (const dataAboutSquare of pieces) {
@@ -165,12 +165,29 @@ function movePieceToNewSquare() {
 
     const element = document.elementFromPoint(x, y);
     const targetSquare = element?.closest(".square");
+    console.log(targetSquare);
 
-    if (targetSquare) {
-        const moves = getMoves(selectedSquare, selectedPiece);
+    const tsRow = Number(targetSquare.dataset.row);
+    const tsCol = Number(targetSquare.dataset.col);
 
-        targetSquare.appendChild(selectedPiece);
-    }
+    const moves = getMoves(selectedSquare, selectedPiece);
+    console.log(moves);
+
+    if (moves.length === 0) return;
+
+    moves.forEach((coords) => {
+        const currRow = coords[0];
+        const currCol = coords[1];
+
+        if (currRow === tsRow && currCol === tsCol) {
+            if (selectedPiece.dataset.piece === "pawn") {
+                selectedPiece.dataset.isMoved = "true";
+            }
+
+            targetSquare.appendChild(selectedPiece);
+        }
+    })
+
 }
 
 function handleMouseUp() {
