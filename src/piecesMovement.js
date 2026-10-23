@@ -82,6 +82,13 @@ function startDragging(event) {
     highlightSquare();
     preparePieceForDragging();
 
+    const pieceRect = selectedPiece.getBoundingClientRect();
+
+    const newLeft = event.clientX - pieceRect.width / 2;
+    const newTop = event.clientY - pieceRect.height / 2;
+
+    setPiecePosition(newLeft, newTop);
+
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 }
@@ -165,13 +172,11 @@ function movePieceToNewSquare() {
 
     const element = document.elementFromPoint(x, y);
     const targetSquare = element?.closest(".square");
-    console.log(targetSquare);
 
     const tsRow = Number(targetSquare.dataset.row);
     const tsCol = Number(targetSquare.dataset.col);
 
     const moves = getMoves(selectedSquare, selectedPiece);
-    console.log(moves);
 
     if (moves.length === 0) return;
 
@@ -187,7 +192,6 @@ function movePieceToNewSquare() {
             targetSquare.appendChild(selectedPiece);
         }
     })
-
 }
 
 function handleMouseUp() {
