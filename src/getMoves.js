@@ -24,19 +24,65 @@ export function getMoves(square, piece) {
 function handlePawn(row, col, isMoved, color) {
     let possibleMoves = [];
 
+    // Possible next move for white pawn
+    const nextSquareW = document.querySelector(
+        `.square[data-row="${row - 1}"][data-col="${col}"]`
+    )
+
+    // Possible next move for black pawn
+    const nextSquareB = document.querySelector(
+        `.square[data-row="${row + 1}"][data-col="${col}"]`
+    )
+
+    // Possible captures for white pawn
+    const squareLeftW = document.querySelector(
+        `.square[data-row="${row - 1}"][data-col="${col - 1}"]`
+    )
+    const squareRightW = document.querySelector(
+        `.square[data-row="${row - 1}"][data-col="${col + 1}"]`
+    )
+
+    // Possible captures for black pawn
+    const squareLeftB = document.querySelector(
+        `.square[data-row="${row + 1}"][data-col="${col - 1}"]`
+    )
+    const squareRightB = document.querySelector(
+        `.square[data-row="${row + 1}"][data-col="${col + 1}"]`
+    )
+
     switch (color) {
         case "white":
             if (isMoved === "false") {
                 possibleMoves.push([row - 1, col], [row - 2, col]);
             } else {
-                possibleMoves.push([row - 1, col], [row - 1, col - 1], [row - 1, col + 1]);
+                if (!nextSquareW.querySelector("img")) {
+                    possibleMoves.push([row - 1, col]);
+                }
+
+                if (squareLeftW.querySelector("img")) {
+                    possibleMoves.push([row - 1, col - 1]);
+                }
+
+                if (squareRightW.querySelector("img")) {
+                    possibleMoves.push([row - 1, col + 1]);
+                }
             }
             break;
         case "black":
             if (isMoved === "false") {
                 possibleMoves.push([row + 1, col], [row + 2, col]);
             } else {
-                possibleMoves.push([row + 1, col], [row + 1, col - 1], [row + 1, col + 1]);
+                if (!nextSquareB.querySelector("img")) {
+                    possibleMoves.push([row + 1, col]);
+                }
+
+                if (squareLeftB.querySelector("img")) {
+                    possibleMoves.push([row + 1, col - 1]);
+                }
+
+                if (squareRightB.querySelector("img")) {
+                    possibleMoves.push([row + 1, col + 1]);
+                }
             }
             break;
     }

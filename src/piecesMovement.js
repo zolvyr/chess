@@ -1,5 +1,6 @@
 import { pieces } from "./initialPiecesState.js";
 import { getMoves } from "./getMoves.js";
+import { renderMoves } from "./drawPossibleMoves.js";
 
 export function setupInitialPieces() {
     for (const dataAboutSquare of pieces) {
@@ -23,8 +24,8 @@ export function setupInitialPieces() {
     }
 }
 
-export let selectedSquare = null;
-export let selectedPiece = null;
+let selectedSquare = null;
+let selectedPiece = null;
 let hoveredSquare = null;
 
 export function setupDragging() {
@@ -39,16 +40,14 @@ export function setupDragging() {
             selectedSquare = square;
             selectedPiece = piece;
 
-            const pieceRect = selectedPiece.getBoundingClientRect();
-
-            const newLeft = event.clientX - pieceRect.width / 2;
-            const newTop = event.clientY - pieceRect.width / 2;
-
-            setPiecePosition(newLeft, newTop);
-
             startDragging(event);
         });
     });
+}
+
+function enableRenderMoves() {
+    const moves = getMoves(selectedSquare, selectedPiece);
+    renderMoves(moves);
 }
 
 function highlightSquare() {
@@ -81,6 +80,8 @@ function startDragging(event) {
 
     highlightSquare();
     preparePieceForDragging();
+
+    enableRenderMoves();
 
     const pieceRect = selectedPiece.getBoundingClientRect();
 
@@ -194,12 +195,25 @@ function movePieceToNewSquare() {
     })
 }
 
+function disableRenderMoves() {
+    const squares = document.querySelectorAll(".square");
+
+    squares.forEach((square) => {
+        const circle = square.querySelector("div");
+
+        if (circle) {
+            square.removeChild(circle);
+        }
+    })
+}
+
 function handleMouseUp() {
     disableHover();
     disableHighlightSquare();
     disableHighlightSquareWhileDragging();
     movePieceToNewSquare();
     resetPiecePosition();
+    disableRenderMoves();
 
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
