@@ -9,10 +9,8 @@ export function getMoves(square, piece) {
             const isMoved = piece.dataset.isMoved;
             const color = piece.dataset.color;
 
-            const allMoves = handlePawn(moveToRow, moveToCol, isMoved, color);
-            const validMoves = getValidMoves(allMoves);
-
-            return validMoves;
+            const allMoves = getMovesForPawn(moveToRow, moveToCol, isMoved, color);
+            return getValidMoves(allMoves);
         case "rook":
         case "knight":
         case "bishop":
@@ -21,69 +19,62 @@ export function getMoves(square, piece) {
     }
 }
 
-function handlePawn(row, col, isMoved, color) {
+function getMovesForPawn(row, col, isMoved, color) {
     let possibleMoves = [];
 
-    // Possible next move for white pawn
-    const nextSquareW = document.querySelector(
-        `.square[data-row="${row - 1}"][data-col="${col}"]`
-    )
+    function getAllowedNextMoves(moves) {
+        if (isMoved === "true") {
+            moves = moves.slice(0, 1);
+        }
 
-    // Possible next move for black pawn
-    const nextSquareB = document.querySelector(
-        `.square[data-row="${row + 1}"][data-col="${col}"]`
-    )
+        for (const coords of moves) {
+            const row = coords[0];
+            const col = coords[1];
 
-    // Possible captures for white pawn
-    const squareLeftW = document.querySelector(
-        `.square[data-row="${row - 1}"][data-col="${col - 1}"]`
-    )
-    const squareRightW = document.querySelector(
-        `.square[data-row="${row - 1}"][data-col="${col + 1}"]`
-    )
+            const square = document.querySelector(
+                `.square[data-row="${row}"][data-col="${col}"]`
+            )
 
-    // Possible captures for black pawn
-    const squareLeftB = document.querySelector(
-        `.square[data-row="${row + 1}"][data-col="${col - 1}"]`
-    )
-    const squareRightB = document.querySelector(
-        `.square[data-row="${row + 1}"][data-col="${col + 1}"]`
-    )
+            // A piece that stands in front of the pawn doesn't allow to move forward
+            if (!square.querySelector("img")) {
+                possibleMoves.push(coords);
+            } else {
+                return;
+            }
+        }
+    }
+
+    function getAllowedNextCaptures(captures) {
+        captures.forEach((coords) => {
+            const row = coords[0];
+            const col = coords[1];
+
+            const square = document.querySelector(
+                `.square[data-row="${row}"][data-col="${col}"]`
+            )
+
+            if (square.querySelector("img")) {
+                possibleMoves.push(coords);
+            }
+        })
+    }
 
     switch (color) {
         case "white":
-            if (isMoved === "false") {
-                possibleMoves.push([row - 1, col], [row - 2, col]);
-            } else {
-                if (!nextSquareW.querySelector("img")) {
-                    possibleMoves.push([row - 1, col]);
-                }
+            const nextMovesW = [[row - 1, col], [row - 2, col]];
+            const nextCapturesW = [[row - 1, col - 1], [row - 1, col + 1]];
 
-                if (squareLeftW.querySelector("img")) {
-                    possibleMoves.push([row - 1, col - 1]);
-                }
+            getAllowedNextMoves(nextMovesW);
+            getAllowedNextCaptures(nextCapturesW);
 
-                if (squareRightW.querySelector("img")) {
-                    possibleMoves.push([row - 1, col + 1]);
-                }
-            }
             break;
         case "black":
-            if (isMoved === "false") {
-                possibleMoves.push([row + 1, col], [row + 2, col]);
-            } else {
-                if (!nextSquareB.querySelector("img")) {
-                    possibleMoves.push([row + 1, col]);
-                }
+            const nextMovesB = [[row + 1, col], [row + 2, col]];
+            const nextCapturesB = [[row + 1, col - 1], [row + 1, col + 1]];
 
-                if (squareLeftB.querySelector("img")) {
-                    possibleMoves.push([row + 1, col - 1]);
-                }
+            getAllowedNextMoves(nextMovesB);
+            getAllowedNextCaptures(nextCapturesB);
 
-                if (squareRightB.querySelector("img")) {
-                    possibleMoves.push([row + 1, col + 1]);
-                }
-            }
             break;
     }
 
