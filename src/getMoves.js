@@ -44,7 +44,7 @@ function getMovesForPawn(row, col, isMoved, color) {
         }
     }
 
-    function getAllowedNextCaptures(captures) {
+    function getAllowedNextCaptures(captures, color) {
         captures.forEach((coords) => {
             const row = coords[0];
             const col = coords[1];
@@ -53,7 +53,9 @@ function getMovesForPawn(row, col, isMoved, color) {
                 `.square[data-row="${row}"][data-col="${col}"]`
             )
 
-            if (square.querySelector("img")) {
+            const img = square.querySelector("img");
+
+            if (img && img.dataset.color === color) {
                 possibleMoves.push(coords);
             }
         })
@@ -61,19 +63,19 @@ function getMovesForPawn(row, col, isMoved, color) {
 
     switch (color) {
         case "white":
-            const nextMovesW = [[row - 1, col], [row - 2, col]];
-            const nextCapturesW = [[row - 1, col - 1], [row - 1, col + 1]];
+            const nextMovesWhite = [[row - 1, col], [row - 2, col]];
+            const nextCapturesWhite = [[row - 1, col - 1], [row - 1, col + 1]];
 
-            getAllowedNextMoves(nextMovesW);
-            getAllowedNextCaptures(nextCapturesW);
+            getAllowedNextMoves(nextMovesWhite);
+            getAllowedNextCaptures(nextCapturesWhite, "black");
 
             break;
         case "black":
-            const nextMovesB = [[row + 1, col], [row + 2, col]];
-            const nextCapturesB = [[row + 1, col - 1], [row + 1, col + 1]];
+            const nextMovesBlack = [[row + 1, col], [row + 2, col]];
+            const nextCapturesBlack = [[row + 1, col - 1], [row + 1, col + 1]];
 
-            getAllowedNextMoves(nextMovesB);
-            getAllowedNextCaptures(nextCapturesB);
+            getAllowedNextMoves(nextMovesBlack);
+            getAllowedNextCaptures(nextCapturesBlack, "white");
 
             break;
     }

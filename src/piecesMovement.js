@@ -172,7 +172,7 @@ function movePieceToNewSquare() {
     const y = pieceRect.top + pieceRect.height / 2;
 
     const element = document.elementFromPoint(x, y);
-    const targetSquare = element?.closest(".square");
+    const targetSquare = element.closest(".square");
 
     const tsRow = Number(targetSquare.dataset.row);
     const tsCol = Number(targetSquare.dataset.col);
@@ -188,6 +188,11 @@ function movePieceToNewSquare() {
         if (currRow === tsRow && currCol === tsCol) {
             if (selectedPiece.dataset.piece === "pawn") {
                 selectedPiece.dataset.isMoved = "true";
+            }
+
+            const img = targetSquare.querySelector("img");
+            if (img) {
+                targetSquare.removeChild(img);
             }
 
             targetSquare.appendChild(selectedPiece);
