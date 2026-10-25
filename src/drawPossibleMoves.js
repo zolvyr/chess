@@ -24,8 +24,6 @@ export function renderMoves(moves) {
 function makeCircleForUsualMove() {
     const moveCircle = document.createElement("div");
 
-    moveCircle.dataset.move = "move";
-
     moveCircle.style.backgroundColor = "lightgreen";
     moveCircle.style.filter = "opacity(0.5)";
     moveCircle.style.width = "30px";
@@ -41,8 +39,6 @@ function makeCircleForUsualMove() {
 
 function makeCircleForCapture() {
     const moveCapture = document.createElement("div");
-
-    moveCapture.dataset.capture = "capture";
 
     moveCapture.style.position = "absolute";
     moveCapture.style.top = "0";
