@@ -39,17 +39,20 @@ function makeCircleForUsualMove() {
     return moveCircle;
 }
 
-// TODO: make this function work
 function makeCircleForCapture() {
     const moveCapture = document.createElement("div");
 
     moveCapture.dataset.capture = "capture";
 
     moveCapture.style.position = "absolute";
-    moveCapture.style.width = "100px";
-    moveCapture.style.height = "100px";
-    moveCapture.style.box = "shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8)";
+    moveCapture.style.top = "0";
+    moveCapture.style.left = "0";
+    moveCapture.style.width = "100%";
+    moveCapture.style.height = "100%";
     moveCapture.style.borderRadius = "50%";
+    moveCapture.style.border = "5px solid lightgreen";
+    moveCapture.style.filter = "opacity(0.5)";
+    moveCapture.style.background = "transparent";
 
     return moveCapture;
 }
