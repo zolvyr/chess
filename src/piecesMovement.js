@@ -1,5 +1,5 @@
 import { pieces } from "./initialPiecesState.js";
-import { getMoves } from "./getMoves.js";
+import { getMoves } from "./moves/getMoves.js";
 import { renderMoves } from "./drawPossibleMoves.js";
 
 export function setupInitialPieces() {
